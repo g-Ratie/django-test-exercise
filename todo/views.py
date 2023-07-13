@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from todo.models import Task
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
@@ -29,3 +29,12 @@ def detail(request, task_id):
         raise Http404("Task does not exist")
     context = {"task": task}
     return render(request, "todo/detail.html", context)
+
+
+def delete(request, task_id):
+    try:
+        task = Task.objects.get(pk=task_id)
+    except Task.DoesNotExist:
+        raise Http404("Task does not exist")
+    task.delete()
+    return redirect(index)
